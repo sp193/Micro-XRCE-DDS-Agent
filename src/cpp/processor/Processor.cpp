@@ -22,8 +22,9 @@
 namespace eprosima {
 namespace uxr {
 
-Processor::Processor(
-        Server& server,
+template<typename EndPoint>
+Processor<EndPoint>::Processor(
+        Server<EndPoint>& server,
         Root& root,
         Middleware::Kind middleware_kind)
     : server_(server)
@@ -31,11 +32,8 @@ Processor::Processor(
     , root_(root)
 {}
 
-Processor::~Processor()
-{
-}
-
-void Processor::process_input_packet(InputPacket&& input_packet)
+template<typename EndPoint>
+void Processor<EndPoint>::process_input_packet(InputPacket&& input_packet)
 {
     /* Create client message. */
     if ((input_packet.message->get_header().session_id() == dds::xrce::SESSIONID_NONE_WITH_CLIENT_KEY) ||
@@ -108,7 +106,8 @@ void Processor::process_input_packet(InputPacket&& input_packet)
     }
 }
 
-void Processor::process_input_message(
+template<typename EndPoint>
+void Processor<EndPoint>::process_input_message(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -117,7 +116,10 @@ void Processor::process_input_message(
     }
 }
 
-bool Processor::process_submessage(ProxyClient& client, InputPacket& input_packet)
+template<typename EndPoint>
+bool Processor<EndPoint>::process_submessage(
+        ProxyClient& client,
+        InputPacket& input_packet)
 {
     bool rv;
     dds::xrce::SubmessageId submessage_id = input_packet.message->get_subheader().submessage_id();
@@ -167,7 +169,9 @@ bool Processor::process_submessage(ProxyClient& client, InputPacket& input_packe
     return rv;
 }
 
-bool Processor::process_create_client_submessage(InputPacket& input_packet)
+template<typename EndPoint>
+bool Processor<EndPoint>::process_create_client_submessage(
+        InputPacket& input_packet)
 {
     bool rv = true;
     dds::xrce::CREATE_CLIENT_Payload client_payload;
@@ -245,7 +249,8 @@ bool Processor::process_create_client_submessage(InputPacket& input_packet)
     return rv;
 }
 
-bool Processor::process_create_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_create_submessage(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -280,7 +285,8 @@ bool Processor::process_create_submessage(
     return rv;
 }
 
-bool Processor::process_delete_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_delete_submessage(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -336,7 +342,8 @@ bool Processor::process_delete_submessage(
     return rv;
 }
 
-bool Processor::process_write_data_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_write_data_submessage(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -381,7 +388,8 @@ bool Processor::process_write_data_submessage(
     return rv;
 }
 
-bool Processor::process_read_data_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_read_data_submessage(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -440,7 +448,8 @@ bool Processor::process_read_data_submessage(
     return rv;
 }
 
-bool Processor::process_acknack_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_acknack_submessage(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -484,7 +493,8 @@ bool Processor::process_acknack_submessage(
     return rv;
 }
 
-bool Processor::process_heartbeat_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_heartbeat_submessage(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -523,7 +533,8 @@ bool Processor::process_heartbeat_submessage(
     return rv;
 }
 
-bool Processor::process_reset_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_reset_submessage(
         ProxyClient& client,
         InputPacket& /*input_packet*/)
 {
@@ -531,7 +542,8 @@ bool Processor::process_reset_submessage(
     return true;
 }
 
-bool Processor::process_fragment_submessage(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_fragment_submessage(
         ProxyClient& client,
         InputPacket& input_packet)
 {
@@ -546,7 +558,10 @@ bool Processor::process_fragment_submessage(
     return true;
 }
 
-bool Processor::process_timestamp_submessage(ProxyClient& client, InputPacket& input_packet)
+template<typename EndPoint>
+bool Processor<EndPoint>::process_timestamp_submessage(
+        ProxyClient& client,
+        InputPacket& input_packet)
 {
     bool rv = true;
     dds::xrce::TIMESTAMP_Payload timestamp;
@@ -619,7 +634,8 @@ bool Processor::process_timestamp_submessage(ProxyClient& client, InputPacket& i
 //    return true;
 //}
 
-void Processor::read_data_callback(
+template<typename EndPoint>
+void Processor<EndPoint>::read_data_callback(
         const ReadCallbackArgs& cb_args,
         const std::vector<uint8_t>& buffer)
 {
@@ -648,7 +664,8 @@ void Processor::read_data_callback(
     }
 }
 
-bool Processor::process_get_info_packet(
+template<typename EndPoint>
+bool Processor<EndPoint>::process_get_info_packet(
         InputPacket&& input_packet,
         dds::xrce::TransportAddress& address,
         OutputPacket& output_packet) const
@@ -706,7 +723,8 @@ bool Processor::process_get_info_packet(
     return rv;
 }
 
-void Processor::check_heartbeats()
+template<typename EndPoint>
+void Processor<EndPoint>::check_heartbeats()
 {
     /* HEARTBEAT header. */
     dds::xrce::MessageHeader header;
