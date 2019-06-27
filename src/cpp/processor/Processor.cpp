@@ -18,7 +18,9 @@
 #include <uxr/agent/Root.hpp>
 #include <uxr/agent/transport/Server.hpp>
 #include <uxr/agent/utils/Time.hpp>
+
 #include <uxr/agent/transport/endpoint/IPv4EndPoint.hpp>
+#include <uxr/agent/transport/endpoint/IPv6EndPoint.hpp>
 
 namespace eprosima {
 namespace uxr {
@@ -800,6 +802,7 @@ void Processor<EndPoint>::check_heartbeats()
 }
 
 template class Processor<IPv4EndPoint>;
+template class Processor<IPv6EndPoint>;
 
 } // namespace uxr
 } // namespace eprosima
